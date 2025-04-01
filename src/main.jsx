@@ -1,8 +1,12 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import './index.css'
-import App from './App.jsx'
+import { io } from 'socket.io-client';
+import AuthProvider from './Auth/AuthProvider'; 
+import App from './App';
+import Lobby from './pages/Lobby';
+import Game from './pages/Game';
+
 
 const URL = 'http://localhost:3000';
 export const socket = io(URL);

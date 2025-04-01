@@ -1,20 +1,13 @@
-import { useState } from 'react'
-import './App.css'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Lobby from "./components/Lobby";
-import Game from "./components/Game";
+import { Outlet } from 'react-router-dom';
+import useAuth from './Auth/useAuth'; 
 
-
-function App() {
+export default function App() {
+  const username = useAuth();
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Lobby />} />
-        <Route path="/game" element={<Game />} />
-      </Routes>
-    </Router>
+    <div className="root-container">
+      <nav>Welcome!! {username}</nav>
+      <Outlet />
+    </div>
   );
 }
-
-export default App
