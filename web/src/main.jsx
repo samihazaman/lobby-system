@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'; // 👈 add Navigate
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'; 
 import { io } from 'socket.io-client';
 import AuthProvider from './Auth/AuthProvider'; 
 import App from './App';
