@@ -32,7 +32,13 @@ io.on('connection', (socket) => {
     io.emit('activeEvents', Object.values(events)); 
   });
 
-
+  socket.on('joinEvent', ({ eventId, username }) => {
+    if (events[eventId]) {
+      events[eventId].players.push(username);
+      io.emit('activeEvents', Object.values(events)); 
+      io.to(eventId).emit('eventStart', events[eventId]); 
+    }
+  });
 
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);

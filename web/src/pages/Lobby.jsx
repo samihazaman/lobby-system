@@ -25,9 +25,12 @@ export default function Lobby() {
   const handleCreateEvent = () => {
     const eventId = generateEventId();
     socket.emit('createEvent', { eventId, username });
-    navigate(`/${eventId}`);
   };
 
+  const handleJoinEvent = (eventId) => {
+    socket.emit('joinEvent', { eventId, username });
+    navigate(`/${eventId}`);
+  };
 
   return (
     <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -67,7 +70,14 @@ export default function Lobby() {
                 <p className="font-medium">Event: {event.eventId}</p>
                 <p>Host: {event.host}</p>
               </div>
-        
+
+              <button
+                onClick={() => handleJoinEvent(event.eventId)}
+                className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+              >
+                Join
+              </button>
+      
             </div>
           ))
         )}
