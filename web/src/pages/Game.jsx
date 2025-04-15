@@ -47,6 +47,13 @@ export default function Game() {
       setPlayers((prev) => prev.filter((p) => p !== name));
     });
 
+    socket.on('hostLeft', () => {
+      setHostLeft(true);
+      setEveryoneReady(false);
+      setShowCountdown(false);
+      setTimeout(() => navigate('/lobby'), 3000);
+    });
+
 
     socket.on('startQuiz', (fetchedQuestions) => {
       const withShuffledAnswers = fetchedQuestions.map(shuffleAnswers);
@@ -77,7 +84,6 @@ export default function Game() {
     });
         
     return () => {
-      socket.emit('leaveRoom', { sessionId, username });
       socket.off('sessionPlayers');
       socket.off('updateReadyStatus');
       socket.off('startQuiz');
