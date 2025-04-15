@@ -5,9 +5,12 @@ const cors = require('cors');
 /*const fetch = require('node-fetch'); */
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
-
 const app = express();
 const server = http.createServer(app);
+
+const socketToSession = {}; // track which session a socket is in
+const socketToUsername = {}; // track username for each socket
+
 
 const io = new Server(server, {
   cors: {
@@ -52,6 +55,8 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ sessionId, username }) => {
     socket.join(sessionId);
     socket.username = username;
+    socketToSession[socket.id] = sessionId;
+    socketToUsername[socket.id] = username;  
 
     if (!events[sessionId]) {
       events[sessionId] = {
@@ -98,10 +103,61 @@ io.on('connection', (socket) => {
   });
 
 
+  socket.on('leaveRoom', ({ sessionId, username }) => {
+    if (!events[sessionId]) return;
+  
+    const isHost = events[sessionId].host === username;
+    socket.leave(sessionId);
+  
+    if (isHost) {
+      // End session for all
+      io.to(sessionId).emit('hostLeft');
+      delete events[sessionId];
+      delete playerReadyStatus[sessionId];
+      delete playerScores[sessionId];
+    } else {
+
+      // Remove player and notify others
+      events[sessionId].players = events[sessionId].players.filter(p => p !== username);
+      playerReadyStatus[sessionId] = playerReadyStatus[sessionId]?.filter(p => p !== username);
+      io.to(sessionId).emit('sessionPlayers', events[sessionId].players);
+      io.to(sessionId).emit('playerLeft', username);
+    }
+  
+    delete socketToSession[socket.id];
+    delete socketToUsername[socket.id];
+  });
+  
+  
 
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);
+    const sessionId = socketToSession[socket.id];
+    const username = socketToUsername[socket.id];
+    if (!sessionId || !events[sessionId]) return;
+  
+    const isHost = events[sessionId].host === username;
+    socket.leave(sessionId);
+  
+    if (isHost) {
+      io.to(sessionId).emit('hostLeft');
+      delete events[sessionId];
+      delete playerReadyStatus[sessionId];
+      delete playerScores[sessionId];
+    } else {
+      events[sessionId].players = events[sessionId].players.filter(p => p !== username);
+      playerReadyStatus[sessionId] = playerReadyStatus[sessionId]?.filter(p => p !== username);
+      io.to(sessionId).emit('sessionPlayers', events[sessionId].players);
+      io.to(sessionId).emit('playerLeft', username);
+    }
+  
+    delete socketToSession[socket.id];
+    delete socketToUsername[socket.id];
   });
+  
+
+
+
 });
 
 const PORT = 3000;
