@@ -17,6 +17,9 @@ export default function Game() {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(120);
   const [showResults, setShowResults] = useState(false);
+  const [showCountdown, setShowCountdown] = useState(false);
+  const [countdown, setCountdown] = useState(3);
+
 
   useEffect(() => {
     socket.emit('joinRoom', { sessionId, username });
@@ -32,9 +35,31 @@ export default function Game() {
     socket.on('startQuiz', (fetchedQuestions) => {
       const withShuffledAnswers = fetchedQuestions.map(shuffleAnswers);
       setQuestions(withShuffledAnswers); 
-      setEveryoneReady(true);
-    });
+      setShowCountdown(true);
     
+      // Countdown timer
+      let count = 3;
+      setCountdown(count);
+
+      const countdownInterval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          setCountdown(count);
+        }
+
+        if(count === 0){
+          setCountdown("Start!");
+        }
+
+        if(count === -1){
+          clearInterval(countdownInterval);
+          setShowCountdown(false);
+          setEveryoneReady(true);
+        }
+
+      }, 1000);
+    });
+        
     return () => {
       socket.off('sessionPlayers');
       socket.off('updateReadyStatus');
@@ -107,9 +132,18 @@ export default function Game() {
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">Session ID: {sessionId}</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        {players.map((player) => renderPlayerBox(player))}
-      </div>
+      {!everyoneReady && (
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+           {players.map((player) => renderPlayerBox(player))}
+        </div>
+      )}
+
+     {showCountdown && (
+        <div className="text-center mt-10 text-6xl font-bold text-blue-600">
+          {countdown}
+        </div>
+      )}
+
 
       {everyoneReady && !showResults && questions.length > 0 && (
         <div>
