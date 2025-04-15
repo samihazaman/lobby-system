@@ -25,6 +25,7 @@ export default function Lobby() {
   const handleCreateEvent = () => {
     const eventId = generateEventId();
     socket.emit('createEvent', { eventId, username });
+    navigate(`/${eventId}`);
   };
 
   const handleJoinEvent = (eventId) => {

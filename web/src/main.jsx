@@ -6,7 +6,7 @@ import AuthProvider from './Auth/AuthProvider';
 import App from './App';
 import Login from './pages/Login';
 import Lobby from './pages/Lobby';
-/* import Game from './pages/Game'; */
+import Game from './pages/Game';
 
 
 const URL = 'http://localhost:3000';
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
       { path: '/', element: <Navigate to="/login" replace /> }, 
       { path: '/login', element: <Login /> },                   
       { path: '/lobby', element: <Lobby /> },
-      /*{ path: '/:sessionId', element: <Game /> }, */
+      { path: '/:sessionId', element: <Game /> },
     ],
   },
 ]);
