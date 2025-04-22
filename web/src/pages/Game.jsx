@@ -159,6 +159,13 @@ export default function Game() {
     );
   };
 
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+  
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
@@ -200,8 +207,8 @@ export default function Game() {
       {everyoneReady && !showResults && questions.length > 0 && (
         <div>
           <div className="flex justify-between items-center mb-4">
-            <div className="text-xl font-medium">Time Left: {timeLeft}s</div>
-            <div className="text-xl font-medium">Your Score: {score}</div>
+          <div className="text-xl font-medium">Time Left: {formatTime(timeLeft)}</div>
+          <div className="text-xl font-medium">Your Score: {score}</div>
           </div>
 
           <h3 className="text-xl font-semibold mb-2">
