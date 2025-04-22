@@ -51,7 +51,6 @@ export default function Game() {
       setHostLeft(true);
       setEveryoneReady(false);
       setShowCountdown(false);
-      setTimeout(() => navigate('/lobby'), 3000);
     });
 
 
@@ -167,11 +166,11 @@ export default function Game() {
 
       {hostLeft && (
         <div className="text-center text-red-600 font-semibold mt-8">
-          The host has left the session. You’ll be returned to the lobby.
+          <p className="text-xl mb-4">The host has left the session.</p>
           <button
             onClick={() => navigate('/lobby')}
             className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
+            >
             Go to Lobby
           </button>
         </div>
