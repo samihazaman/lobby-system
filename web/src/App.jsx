@@ -14,7 +14,9 @@ export default function App() {
     <div className="root-container">
       {!isLoginPage && username && (
         <nav className="bg-blue-100 p-4 text-center text-blue-800 font-medium">
-          Welcome!! {username}
+          QuizVerse
+          {/* Welcome!! {username} */}
+
         </nav>
       )}
       <Outlet />
