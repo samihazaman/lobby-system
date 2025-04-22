@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { socket } from '../main';
 import useAuth from '../Auth/useAuth';
+import Leaderboard from '../components/Leaderboard';
 
 export default function Game() {
   const { sessionId } = useParams();
@@ -21,6 +22,7 @@ export default function Game() {
   const [countdown, setCountdown] = useState(3);
   const [playerLeftMsg, setPlayerLeftMsg] = useState('');
   const [hostLeft, setHostLeft] = useState(false);
+  const [sessionScores, setSessionScores] = useState([]);
 
   const handleLeave = () => {
     socket.emit('leaveRoom', { sessionId, username });
@@ -81,6 +83,10 @@ export default function Game() {
 
       }, 1000);
     });
+
+    socket.on('sessionScores', (scores) => {
+      setSessionScores(scores);
+    });
         
     return () => {
       socket.off('sessionPlayers');
@@ -88,6 +94,7 @@ export default function Game() {
       socket.off('startQuiz');
       socket.off('hostLeft');
       socket.off('playerLeft');
+      socket.off('sessionScores');
     };
   }, [sessionId, username]);
 
@@ -219,6 +226,10 @@ export default function Game() {
         <div className="text-center mt-8">
           <h2 className="text-2xl font-bold mb-2">Quiz Over!</h2>
           <p className="text-lg">Your Score: {score}/10</p>
+
+           {/* Show leaderboard if scores available */}
+           {sessionScores.length > 0 && <Leaderboard scores={sessionScores} />}
+
           <button
             onClick={() => navigate('/lobby')}
             className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
