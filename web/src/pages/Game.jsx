@@ -99,14 +99,25 @@ export default function Game() {
   }, [sessionId, username]);
 
   useEffect(() => {
-    if (everyoneReady && timeLeft > 0) {
+    if (everyoneReady) {
       const timer = setInterval(() => {
-        setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+        setTimeLeft((prev) => {
+          if (prev > 0) {
+            return prev - 1;
+          } else {
+            clearInterval(timer);
+            if (!showResults) {
+              setShowResults(true);
+              socket.emit('submitScore', { sessionId, username, score });
+            }
+            return 0;
+          }
+        });
       }, 1000);
       return () => clearInterval(timer);
     }
-  }, [everyoneReady, timeLeft]);
-
+  }, [everyoneReady, showResults, score, sessionId, username]);
+  
   const handleReady = () => {
     setIsReady(true);
     socket.emit('playerReady', sessionId);
