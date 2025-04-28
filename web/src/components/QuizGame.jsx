@@ -95,11 +95,11 @@ export default function QuizGame({ sessionId, username, players, readyUsers, set
     const isSelf = player === username;
 
     return (
-      <div key={player} className="border p-4 rounded shadow text-center">
-        <p className="font-bold mb-2">{player}</p>
+      <div key={player} className="border p-4 rounded-xl shadow-md bg-white text-center">
+        <p className="font-bold text-indigo-600 mb-2">{player}</p>
         <button
           disabled
-          className={`w-full px-4 py-2 rounded mb-2 ${
+          className={`w-full px-4 py-2 rounded-lg mb-2 ${
             isPlayerReady ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700'
           }`}
         >
@@ -108,7 +108,7 @@ export default function QuizGame({ sessionId, username, players, readyUsers, set
         {isSelf && !isReady && !everyoneReady && (
           <button
             onClick={handleReady}
-            className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="w-full bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition"
           >
             I'm Ready
           </button>
@@ -124,50 +124,55 @@ export default function QuizGame({ sessionId, username, players, readyUsers, set
   };
 
   return (
-    <>
+    <div className="bg-gradient-to-tr from-indigo-100 to-sky-100 min-h-screen p-8 rounded-xl">
+      {/* Host Left */}
       {hostLeft && (
         <div className="text-center text-red-600 font-semibold mt-8">
-          <p className="text-xl mb-4">The host has left the session.</p>
+          <p className="text-2xl mb-4">The host has left the session.</p>
           <button
             onClick={handleLeave}
-            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="mt-4 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition"
           >
             Go to Lobby
           </button>
         </div>
       )}
 
+      {/* Player Left */}
       {playerLeftMsg && !everyoneReady && (
-        <div className="text-center text-yellow-600 font-medium mb-4">{playerLeftMsg}</div>
+        <div className="text-center text-yellow-600 font-medium mb-6 text-lg">{playerLeftMsg}</div>
       )}
 
+      {/* Waiting for Players */}
       {!everyoneReady && !hostLeft && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {players.map((player) => renderPlayerBox(player))}
         </div>
       )}
 
+      {/* Countdown */}
       {showCountdown && (
-        <div className="text-center mt-10 text-6xl font-bold text-blue-600">{countdown}</div>
+        <div className="text-center mt-10 text-6xl font-bold text-indigo-600 animate-bounce">{countdown}</div>
       )}
 
+      {/* Quiz Active */}
       {everyoneReady && !showResults && questions.length > 0 && (
-        <div>
-          <div className="flex justify-between items-center mb-4">
-            <div className="text-xl font-medium">Time Left: {formatTime(timeLeft)}</div>
-            <div className="text-xl font-medium">Your Score: {score}</div>
+        <div className="bg-white rounded-xl p-8 shadow-lg mt-8">
+          <div className="flex justify-between items-center mb-6">
+            <div className="text-lg font-semibold text-indigo-600">Time Left: {formatTime(timeLeft)}</div>
+            <div className="text-lg font-semibold text-indigo-600">Score: {score}</div>
           </div>
 
-          <h3 className="text-xl font-semibold mb-2">
+          <h3 className="text-2xl font-bold mb-6 text-gray-800">
             Q{currentIndex + 1}: {questions[currentIndex].question}
           </h3>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {questions[currentIndex].allAnswers.map((choice, idx) => (
               <button
                 key={idx}
                 onClick={() => handleAnswer(choice)}
-                className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+                className="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-semibold py-3 px-6 rounded-lg transition"
               >
                 {choice}
               </button>
@@ -176,19 +181,20 @@ export default function QuizGame({ sessionId, username, players, readyUsers, set
         </div>
       )}
 
+      {/* Results */}
       {showResults && (
-        <div className="text-center mt-8">
-          <h2 className="text-2xl font-bold mb-2">Quiz Over!</h2>
-          <p className="text-lg">Your Score: {score}/10</p>
+        <div className="text-center mt-12">
+          <h2 className="text-3xl font-bold text-indigo-600 mb-4">Quiz Over!</h2>
+          <p className="text-xl text-gray-700 mb-8">Your Score: {score}/10</p>
           {sessionScores.length > 0 && <Leaderboard scores={sessionScores} />}
           <button
             onClick={handleLeave}
-            className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            className="mt-8 bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 transition"
           >
             Leave Session
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 }

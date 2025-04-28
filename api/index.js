@@ -31,10 +31,11 @@ io.on('connection', (socket) => {
 
   socket.emit('activeEvents', Object.values(events));
 
-  socket.on('createEvent', ({ eventId, username }) => {
+  socket.on('createEvent', ({ eventId, username, eventName }) => {
     events[eventId] = {
       eventId,
       host: username,
+      eventName,
       players: [username],
     };
     socket.join(eventId);

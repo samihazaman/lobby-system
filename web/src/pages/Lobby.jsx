@@ -9,7 +9,7 @@ export default function Lobby() {
   const username = useAuth();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
-  const [selectedType, setSelectedType] = useState('quiz');
+  const [selectedType, setSelectedType] = useState('Computer Science Quiz');
 
   useEffect(() => {
     socket.on('activeEvents', (data) => {
@@ -23,7 +23,7 @@ export default function Lobby() {
 
   const handleCreateEvent = () => {
     const eventId = generateEventId();
-    socket.emit('createEvent', { eventId, username });
+    socket.emit('createEvent', { eventId, username, eventName: selectedType }); 
     navigate(`/${eventId}`);
   };
 
@@ -46,8 +46,8 @@ export default function Lobby() {
             onChange={(e) => setSelectedType(e.target.value)}
             className="w-full mb-4 px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-400 focus:outline-none"
           >
-            <option value="quiz">Quiz</option>
-            <option value="tic tac toe">Tic Tac Toe</option>
+            <option value="Computer Science Quiz">Computer Science Quiz</option>
+            <option value="History Quiz">History Quiz</option>
           </select>
           <button
             onClick={handleCreateEvent}
@@ -71,7 +71,7 @@ export default function Lobby() {
                 className="flex items-center justify-between border border-gray-200 p-4 rounded-lg"
               >
                 <div>
-                  <p className="font-medium text-gray-800">Event ID: {event.eventId}</p>
+                  <p className="font-medium text-gray-800">{event.eventName}</p>
                   <p className="text-sm text-gray-500">Host: {event.host}</p>
                 </div>
                 <button

@@ -33,13 +33,13 @@ export default function Game() {
 
     socket.on('playerLeft', (name) => {
       setPlayerLeftMsg(`${name} has left the game.`);
-      setEveryoneReady(false); // <-- return to waiting page
+      setEveryoneReady(false); 
       setReadyUsers((prev) => prev.filter((user) => user !== name));
       setPlayers((prev) => prev.filter((p) => p !== name));
     });
 
     socket.on('hostLeft', () => {
-      setHostLeft(true); // <-- if host leaves
+      setHostLeft(true); 
       setEveryoneReady(false);
     });
 
@@ -52,7 +52,7 @@ export default function Game() {
   }, [sessionId, username]);
 
   return (
-    <div className="p-6">
+   <div className="bg-gradient-to-tr from-indigo-100 to-sky-100 min-h-screen p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Computer Science Quiz</h2>
         <button
@@ -76,7 +76,6 @@ export default function Game() {
         </div>
       )}
 
-      {/* QuizGame loaded only if host has NOT left */}
       {!hostLeft && (
         <QuizGame
           sessionId={sessionId}
