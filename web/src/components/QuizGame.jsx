@@ -6,12 +6,15 @@ export default function QuizGame({ sessionId, username, players, readyUsers, set
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(120);
+  const [timeLeft, setTimeLeft] = useState(150);
   const [showResults, setShowResults] = useState(false);
   const [showCountdown, setShowCountdown] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isReady, setIsReady] = useState(false);
   const [sessionScores, setSessionScores] = useState([]);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);  
+  const [isAnswerLocked, setIsAnswerLocked] = useState(false);  
+
 
   const handleReady = () => {
     setIsReady(true);
@@ -77,18 +80,34 @@ export default function QuizGame({ sessionId, username, players, readyUsers, set
     return { ...question, allAnswers: allAnswers.sort(() => Math.random() - 0.5) };
   };
 
-  const handleAnswer = (selected) => {
+  const handleAnswer = (choice) => {
+    if (isAnswerLocked) return; 
+  
     const correct = questions[currentIndex].correct_answer;
-    if (selected === correct) {
-      setScore((prev) => prev + 1);
-    }
-    if (currentIndex < 9) {
-      setCurrentIndex((prev) => prev + 1);
-    } else {
-      setShowResults(true);
-      socket.emit('submitScore', { sessionId, username, score });
-    }
+    const isCorrectAnswer = choice === correct;
+  
+    setSelectedAnswer(choice);
+    setIsAnswerLocked(true);
+  
+    setTimeout(() => {
+      if (currentIndex < 9) {
+        if (isCorrectAnswer) {
+          setScore((prev) => prev + 1);
+        }
+        setCurrentIndex((prev) => prev + 1);
+        setSelectedAnswer(null);
+        setIsAnswerLocked(false);
+      } else {
+        // Final question:
+        const finalScore = isCorrectAnswer ? score + 1 : score;
+  
+        socket.emit('submitScore', { sessionId, username, score: finalScore });
+        setScore(finalScore); 
+        setShowResults(true);
+      }
+    }, 1500); // wait 1.5 seconds before moving to next question
   };
+  
 
   const renderPlayerBox = (player) => {
     const isPlayerReady = readyUsers.includes(player);
@@ -168,16 +187,35 @@ export default function QuizGame({ sessionId, username, players, readyUsers, set
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {questions[currentIndex].allAnswers.map((choice, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleAnswer(choice)}
-                className="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-semibold py-3 px-6 rounded-lg transition"
-              >
-                {choice}
-              </button>
-            ))}
-          </div>
+            {questions[currentIndex].allAnswers.map((choice, idx) => {
+                const isCorrect = choice === questions[currentIndex].correct_answer;
+                const isSelected = choice === selectedAnswer;
+
+                let buttonStyle = "bg-indigo-100 hover:bg-indigo-200 text-indigo-800";
+
+                if (selectedAnswer) {
+                if (isCorrect) {
+                    buttonStyle = "bg-green-400 text-white";
+                } else if (isSelected) {
+                    buttonStyle = "bg-red-400 text-white";
+                } else {
+                    buttonStyle = "bg-gray-300 text-gray-600";
+                }
+                }
+
+                return (
+                <button
+                    key={idx}
+                    onClick={() => handleAnswer(choice)}
+                    disabled={isAnswerLocked}
+                    className={`font-semibold py-3 px-6 rounded-lg transition ${buttonStyle}`}
+                >
+                    {choice}
+                </button>
+                );
+            })}
+            </div>
+
         </div>
       )}
 
