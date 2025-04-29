@@ -2,7 +2,7 @@
 
 Welcome to **QuizVerse** — a **real-time multiplayer quiz application** where players can create or join quiz events, challenge friends, and race against time to answer questions correctly!
 
-## 📚 Features
+## Features
 
 - 🧠 **Computer Science Quizzes** available (more can be added easily!)
 - 🎮 **Create or Join Live Events** with a simple event selection in the lobby
@@ -14,7 +14,7 @@ Welcome to **QuizVerse** — a **real-time multiplayer quiz application** where 
 
 ---
 
-## 🚀 Technologies Used
+## Technologies Used
 
 | Technology            | Purpose                                          |
 |------------------------|--------------------------------------------------|
