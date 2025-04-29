@@ -63,7 +63,7 @@ cd web
 npm run dev
 ```
 
-### 4. Start the Application
+### 4. Access the Application
 
 ```bash
 # Open your browser and visit:
