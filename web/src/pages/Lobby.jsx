@@ -39,12 +39,12 @@ export default function Lobby() {
       <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md">
         <h2 className="text-2xl font-bold text-indigo-600 mb-6">Welcome, {username}!</h2>
 
-        <div className="mb-10">
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Create a New Event</h3>
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold text-gray-700 mb-4">Create a New Event</h3>
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="w-full mb-4 px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-400 focus:outline-none"
+            className="w-full mb-6 px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-400 focus:outline-none"
           >
             <option value="Computer Science Quiz">Computer Science Quiz</option>
             <option value="History Quiz">History Quiz</option>
